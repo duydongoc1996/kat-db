@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { useAuth } from '../contexts/AuthContext';
+import { useBaby } from '../contexts/BabyContext';
 import { supabase } from '../lib/supabase';
 import { METRIC_TYPES, getMetricUnit } from '../constants/metrics';
 
 export default function AnalyticsPage() {
   const { t } = useTranslation();
-  const { user } = useAuth();
+  const { currentBaby, loading: babyLoading } = useBaby();
   const [selectedMetric, setSelectedMetric] = useState('');
   const [chartType, setChartType] = useState('line');
   const [timeRange, setTimeRange] = useState('7days');
@@ -16,10 +16,10 @@ export default function AnalyticsPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (selectedMetric) {
+    if (selectedMetric && currentBaby) {
       fetchData();
     }
-  }, [selectedMetric, timeRange]);
+  }, [selectedMetric, timeRange, currentBaby]);
 
   const getDateFilter = () => {
     const now = new Date();
@@ -36,12 +36,14 @@ export default function AnalyticsPage() {
   };
 
   const fetchData = async () => {
+    if (!currentBaby) return;
+    
     setLoading(true);
     try {
       let query = supabase
         .from('metrics')
         .select('*')
-        .eq('user_id', user.id)
+        .eq('baby_id', currentBaby.id)
         .eq('input_type', selectedMetric)
         .order('recorded_at', { ascending: true });
 
@@ -91,8 +93,45 @@ export default function AnalyticsPage() {
 
   const selectedUnit = selectedMetric ? getMetricUnit(selectedMetric) : '';
 
+  if (babyLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="bg-white rounded-2xl shadow-lg p-6 text-center">
+          <p className="text-gray-600">{t('loading')}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!currentBaby) {
+    return (
+      <div className="space-y-6">
+        <div className="bg-yellow-50 border border-yellow-200 rounded-2xl shadow-lg p-6">
+          <h3 className="text-lg font-semibold text-yellow-900 mb-2">
+            {t('noBabySelected')}
+          </h3>
+          <p className="text-yellow-800 mb-4">
+            {t('pleaseCreateOrSelectBaby')}
+          </p>
+          <a
+            href="/babies"
+            className="inline-block px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg transition-colors"
+          >
+            {t('manageBabies')}
+          </a>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
+      {/* Baby Info Header */}
+      <div className="bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl shadow-lg p-4 text-white">
+        <p className="text-sm opacity-90">{t('viewingDataFor')}</p>
+        <h2 className="text-xl font-bold">{currentBaby.name}</h2>
+      </div>
+
       <div className="bg-white rounded-2xl shadow-lg p-6">
         <h2 className="text-2xl font-bold text-gray-800 mb-6">
           {t('analyticsTitle')}

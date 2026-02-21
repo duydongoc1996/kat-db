@@ -1,6 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
+import BabySelector from './BabySelector';
 import LanguageSelector from './LanguageSelector';
 
 export default function Layout({ children }) {
@@ -33,6 +34,7 @@ export default function Layout({ children }) {
               )}
             </div>
             <div className="flex items-center gap-3">
+              <BabySelector />
               <LanguageSelector />
               <button
                 onClick={handleSignOut}
@@ -65,6 +67,16 @@ export default function Layout({ children }) {
               }`}
             >
               📊 {t('analytics')}
+            </Link>
+            <Link
+              to="/babies"
+              className={`flex-1 py-2 px-4 rounded-lg text-center font-medium transition-colors ${
+                isActive('/babies')
+                  ? 'bg-blue-500 text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              👶 {t('babies')}
             </Link>
           </nav>
         </div>

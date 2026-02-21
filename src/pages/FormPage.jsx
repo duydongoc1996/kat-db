@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
+import { useBaby } from '../contexts/BabyContext';
 import { supabase } from '../lib/supabase';
 import { METRIC_TYPES, getMetricUnit } from '../constants/metrics';
 
 export default function FormPage() {
   const { t } = useTranslation();
   const { user } = useAuth();
+  const { currentBaby, loading: babyLoading } = useBaby();
   const [inputType, setInputType] = useState('');
   const [value, setValue] = useState('');
   const [note, setNote] = useState('');
@@ -16,6 +18,11 @@ export default function FormPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (!currentBaby) {
+      setMessage({ type: 'error', text: t('pleaseSelectBaby') });
+      return;
+    }
     
     if (!inputType || !value) {
       setMessage({ type: 'error', text: t('errorMessage') });
@@ -27,13 +34,13 @@ export default function FormPage() {
 
     try {
       const recordData = {
+        baby_id: currentBaby.id,
         user_id: user.id,
         input_type: inputType,
         value: parseFloat(value),
         note: note.trim() || null,
       };
 
-      // If custom time is provided, use it; otherwise Supabase will use NOW()
       if (recordedAt) {
         recordData.recorded_at = new Date(recordedAt).toISOString();
       }
@@ -62,12 +69,46 @@ export default function FormPage() {
 
   const selectedUnit = inputType ? getMetricUnit(inputType) : '';
 
+  if (babyLoading) {
+    return (
+      <div className="max-w-md mx-auto">
+        <div className="bg-white rounded-2xl shadow-lg p-6 text-center">
+          <p className="text-gray-600">{t('loading')}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!currentBaby) {
+    return (
+      <div className="max-w-md mx-auto">
+        <div className="bg-yellow-50 border border-yellow-200 rounded-2xl shadow-lg p-6">
+          <h3 className="text-lg font-semibold text-yellow-900 mb-2">
+            {t('noBabySelected')}
+          </h3>
+          <p className="text-yellow-800 mb-4">
+            {t('pleaseCreateOrSelectBaby')}
+          </p>
+          <a
+            href="/babies"
+            className="inline-block px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg transition-colors"
+          >
+            {t('manageBabies')}
+          </a>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-md mx-auto">
       <div className="bg-white rounded-2xl shadow-lg p-6">
-        <h2 className="text-2xl font-bold text-gray-800 mb-6">
+        <h2 className="text-2xl font-bold text-gray-800 mb-2">
           {t('formTitle')}
         </h2>
+        <p className="text-sm text-gray-600 mb-6">
+          {t('recordingFor')}: <span className="font-medium text-blue-600">{currentBaby.name}</span>
+        </p>
 
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* Metric Type Dropdown */}

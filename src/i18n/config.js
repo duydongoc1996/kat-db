@@ -7,6 +7,7 @@ const resources = {
       // Navigation
       form: 'Record',
       analytics: 'Analytics',
+      babies: 'Babies',
       
       // Authentication
       signInWithGoogle: 'Sign in with Google',
@@ -68,6 +69,35 @@ const resources = {
       noData: 'No data available for the selected metric and time range.',
       loading: 'Loading...',
       
+      // Baby Management
+      manageBabies: 'Manage Babies',
+      addBaby: 'Add Baby',
+      babyName: 'Baby Name',
+      enterBabyName: 'Enter baby name',
+      dateOfBirth: 'Date of Birth',
+      createBaby: 'Create Baby',
+      creating: 'Creating...',
+      cancel: 'Cancel',
+      yourBabies: 'Your Babies',
+      noBabiesYet: 'No babies yet. Create your first baby to start tracking!',
+      current: 'Current',
+      born: 'Born',
+      yourRole: 'Your role',
+      owner: 'Owner',
+      admin: 'Admin',
+      member: 'Member',
+      selectBaby: 'Select Baby',
+      noBabySelected: 'No Baby Selected',
+      pleaseCreateOrSelectBaby: 'Please create or select a baby to continue',
+      pleaseSelectBaby: 'Please select a baby first',
+      recordingFor: 'Recording for',
+      viewingDataFor: 'Viewing data for',
+      babyNameRequired: 'Baby name is required',
+      errorCreatingBaby: 'Failed to create baby. Please try again.',
+      babyCreatedSuccessfully: 'Baby created successfully!',
+      multiUserInfo: 'Multi-user Access',
+      multiUserDescription: 'You can invite other users (like dad, grandparents) to manage this baby together. This feature is coming soon!',
+      
       // Language
       language: 'Language',
     }
@@ -77,6 +107,7 @@ const resources = {
       // Navigation
       form: 'Ghi chép',
       analytics: 'Thống kê',
+      babies: 'Bé yêu',
       
       // Authentication
       signInWithGoogle: 'Đăng nhập bằng Google',
@@ -137,6 +168,35 @@ const resources = {
       records: 'lần ghi',
       noData: 'Không có dữ liệu cho chỉ số và khoảng thời gian đã chọn.',
       loading: 'Đang tải...',
+      
+      // Baby Management
+      manageBabies: 'Quản lý bé',
+      addBaby: 'Thêm bé',
+      babyName: 'Tên bé',
+      enterBabyName: 'Nhập tên bé',
+      dateOfBirth: 'Ngày sinh',
+      createBaby: 'Tạo hồ sơ bé',
+      creating: 'Đang tạo...',
+      cancel: 'Hủy',
+      yourBabies: 'Bé của bạn',
+      noBabiesYet: 'Chưa có bé nào. Tạo hồ sơ bé đầu tiên để bắt đầu theo dõi!',
+      current: 'Hiện tại',
+      born: 'Sinh ngày',
+      yourRole: 'Vai trò',
+      owner: 'Chủ sở hữu',
+      admin: 'Quản trị viên',
+      member: 'Thành viên',
+      selectBaby: 'Chọn bé',
+      noBabySelected: 'Chưa chọn bé',
+      pleaseCreateOrSelectBaby: 'Vui lòng tạo hoặc chọn một bé để tiếp tục',
+      pleaseSelectBaby: 'Vui lòng chọn bé trước',
+      recordingFor: 'Ghi chép cho',
+      viewingDataFor: 'Xem dữ liệu của',
+      babyNameRequired: 'Tên bé là bắt buộc',
+      errorCreatingBaby: 'Tạo hồ sơ bé thất bại. Vui lòng thử lại.',
+      babyCreatedSuccessfully: 'Tạo hồ sơ bé thành công!',
+      multiUserInfo: 'Nhiều người quản lý',
+      multiUserDescription: 'Bạn có thể mời người khác (như bố, ông bà) cùng quản lý bé. Tính năng này sắp ra mắt!',
       
       // Language
       language: 'Ngôn ngữ',
