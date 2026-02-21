@@ -25,13 +25,13 @@ ALTER VIEW public_users SET (security_invoker = on);
 -- Note: This is safe because we're only exposing email and name, not sensitive data
 
 -- ============================================
--- Option 2: Create a server function (Alternative)
+-- Option 2: Create a server function (Recommended)
 -- ============================================
 -- Function to get all users for invite dropdown
 CREATE OR REPLACE FUNCTION get_all_users()
 RETURNS TABLE (
   id UUID,
-  email TEXT,
+  email VARCHAR(255),
   full_name TEXT,
   avatar_url TEXT
 ) AS $$
@@ -39,9 +39,9 @@ BEGIN
   RETURN QUERY
   SELECT 
     u.id,
-    u.email,
-    u.raw_user_meta_data->>'full_name' as full_name,
-    u.raw_user_meta_data->>'avatar_url' as avatar_url
+    u.email::VARCHAR(255),
+    (u.raw_user_meta_data->>'full_name')::TEXT as full_name,
+    (u.raw_user_meta_data->>'avatar_url')::TEXT as avatar_url
   FROM auth.users u
   ORDER BY u.created_at DESC;
 END;
