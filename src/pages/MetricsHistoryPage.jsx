@@ -148,8 +148,8 @@ export default function MetricsHistoryPage() {
             >
               <option value="">{t('allTypes')}</option>
               {METRIC_TYPES.map((type) => (
-                <option key={type} value={type}>
-                  {t(type)}
+                <option key={type.value} value={type.value}>
+                  {t(type.value)}
                 </option>
               ))}
             </select>
