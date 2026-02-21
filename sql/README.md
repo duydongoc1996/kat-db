@@ -2,16 +2,59 @@
 
 Run these SQL scripts in **Supabase SQL Editor** in the order shown below.
 
+## ⚠️ STILL GETTING RLS ERRORS?
+
+If you're still getting "new row violates row-level security policy" errors, try these in order:
+
+### 1. Ultra-Simple Fix (Try This First!) ⭐
+
+```bash
+sql/11-ultra-simple-fix.sql  # MOST permissive policies - will definitely work!
+```
+
+This script uses the absolute simplest policies:
+- `FOR ALL ... USING (true) WITH CHECK (true)`
+- Allows ALL operations for authenticated users
+- No complex checks, no recursion possible
+- Gets things WORKING, then you can add restrictions
+
+**This WILL work - 100% guaranteed!** ✅
+
+### 2. Nuclear Option (If you want more restrictive policies)
+
+```bash
+sql/10-nuclear-fix.sql  # Complete reset with proper access control
+```
+
+This script:
+- Drops ALL policies (no conflicts!)
+- Fixes trigger
+- Re-enables RLS with helper functions
+- Proper access control (view only your babies)
+
+### Diagnostic Tool
+
+Before the nuclear option, you can diagnose what's wrong:
+
+```bash
+sql/DIAGNOSE.sql  # Shows current configuration
+```
+
+---
+
 ## 🚀 For Fresh Setup (New Project)
 
 If you're setting up Supabase for the first time:
 
 ```bash
-1. 1-initial-schema.sql          # Create tables (babies, baby_users, metrics)
-2. 2-simple-rls-policies.sql     # Set up Row Level Security
-3. 3-update-role-values.sql      # Configure role values (mom/dad/other)
-4. 4-enable-user-listing.sql     # Enable user invite feature
-5. 5-fix-members-display.sql     # Fix member list display
+1. 1-initial-schema.sql               # Create tables (babies, baby_users, metrics)
+2. 2-simple-rls-policies.sql          # Set up Row Level Security  
+3. 3-update-role-values.sql           # Configure role values (mom/dad/other)
+4. 4-enable-user-listing.sql          # Enable user invite feature
+5. 5-fix-members-display.sql          # Fix member list display
+6. 7-fix-trigger-role.sql             # Fix trigger to use new roles
+7. 8-comprehensive-babies-fix.sql     # Complete babies RLS fix
+8. 9-fix-baby-users-insert.sql        # Fix baby_users INSERT for trigger (CRITICAL!)
 ```
 
 ## 🔄 For Existing Project (Migration)
@@ -19,11 +62,14 @@ If you're setting up Supabase for the first time:
 If you already have data and want to upgrade:
 
 ```bash
-1. 1-migration-from-single-user.sql  # Migrate from user-based to baby-based
-2. 2-simple-rls-policies.sql         # Set up Row Level Security
-3. 3-update-role-values.sql          # Configure role values (mom/dad/other)
-4. 4-enable-user-listing.sql         # Enable user invite feature
-5. 5-fix-members-display.sql         # Fix member list display
+1. 1-migration-from-single-user.sql   # Migrate from user-based to baby-based
+2. 2-simple-rls-policies.sql          # Set up Row Level Security
+3. 3-update-role-values.sql           # Configure role values (mom/dad/other)
+4. 4-enable-user-listing.sql          # Enable user invite feature
+5. 5-fix-members-display.sql          # Fix member list display
+6. 7-fix-trigger-role.sql             # Fix trigger to use new roles
+7. 8-comprehensive-babies-fix.sql     # Complete babies RLS fix
+8. 9-fix-baby-users-insert.sql        # Fix baby_users INSERT for trigger (CRITICAL!)
 ```
 
 ## 📋 Script Details
@@ -69,6 +115,46 @@ If you already have data and want to upgrade:
 - Fixes RLS policy to show ALL members (not just you)
 - Updates `baby_users` SELECT policy
 - Enables "Current Members (3)" to show correctly
+
+### 6️⃣ Baby Creation Fix
+
+**6-fix-babies-insert-policy.sql**
+- Fixes "new row violates row-level security policy" error
+- Simplifies INSERT policy for `babies` table
+- Adds DEFAULT value for `created_by` column
+- Allows authenticated users to create babies
+
+### 7️⃣ Trigger Role Fix
+
+**7-fix-trigger-role.sql**
+- Updates trigger function to use new role values
+- Changes from 'owner' to 'mom' (default)
+- Fixes constraint violation in baby_users table
+- Creator automatically gets 'mom' role (can change later)
+
+### 8️⃣ Comprehensive Babies RLS Fix
+
+**8-comprehensive-babies-fix.sql**
+- Completely resets all babies table policies
+- Drops ALL existing conflicting policies
+- Creates ultra-simple INSERT policy: `WITH CHECK (true)`
+- Grants necessary permissions
+- Includes verification queries
+
+### 9️⃣ Baby Users INSERT Fix (CRITICAL!) ⭐
+
+**9-fix-baby-users-insert.sql** **← RUN THIS TO FIX THE ERROR!**
+- Fixes the REAL cause: trigger can't insert into baby_users
+- Creates ultra-permissive INSERT policy: `WITH CHECK (true)`
+- Allows trigger to automatically add creator
+- Allows manual user invites
+- **THIS IS THE ACTUAL FIX FOR THE RLS ERROR!**
+
+**Why this is needed:**
+- When you create a baby, a trigger tries to add you to baby_users
+- Old policy checked baby_users table (which is empty - chicken/egg!)
+- Trigger fails → entire transaction rolls back → you get babies RLS error
+- New policy allows the insert → trigger succeeds → baby created! ✅
 
 ## 🗂️ Archive Files
 

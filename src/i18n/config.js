@@ -19,6 +19,7 @@ const resources = {
       
       // Form page
       formTitle: 'Record Kat\'s Metrics',
+      recordMetricsFor: 'Record {{babyName}}\'s Metrics',
       inputType: 'Metric Type',
       selectMetric: 'Select a metric',
       value: 'Value',
@@ -75,6 +76,7 @@ const resources = {
       babyName: 'Baby Name',
       enterBabyName: 'Enter baby name',
       dateOfBirth: 'Date of Birth',
+      selectYourRole: 'Choose your relationship to this baby',
       createBaby: 'Create Baby',
       creating: 'Creating...',
       cancel: 'Cancel',
@@ -137,6 +139,7 @@ const resources = {
       
       // Form page
       formTitle: 'Ghi chép chỉ số của Kat',
+      recordMetricsFor: 'Ghi Chỉ Số của {{babyName}}',
       inputType: 'Loại chỉ số',
       selectMetric: 'Chọn chỉ số',
       value: 'Giá trị',
@@ -193,6 +196,7 @@ const resources = {
       babyName: 'Tên bé',
       enterBabyName: 'Nhập tên bé',
       dateOfBirth: 'Ngày sinh',
+      selectYourRole: 'Chọn mối quan hệ của bạn với bé',
       createBaby: 'Tạo hồ sơ bé',
       creating: 'Đang tạo...',
       cancel: 'Hủy',

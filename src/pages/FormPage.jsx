@@ -104,7 +104,7 @@ export default function FormPage() {
     <div className="max-w-md mx-auto">
       <div className="bg-white rounded-2xl shadow-lg p-6">
         <h2 className="text-2xl font-bold text-gray-800 mb-2">
-          {t('formTitle')}
+          {t('recordMetricsFor', { babyName: currentBaby.name })}
         </h2>
         <p className="text-sm text-gray-600 mb-6">
           {t('recordingFor')}: <span className="font-medium text-blue-600">{currentBaby.name}</span>

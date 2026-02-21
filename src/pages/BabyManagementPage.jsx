@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
 import { useBaby } from '../contexts/BabyContext';
+import { supabase } from '../lib/supabase';
 
 export default function BabyManagementPage() {
   const { t } = useTranslation();
@@ -10,6 +11,7 @@ export default function BabyManagementPage() {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [newBabyName, setNewBabyName] = useState('');
   const [newBabyDOB, setNewBabyDOB] = useState('');
+  const [newBabyRole, setNewBabyRole] = useState('mom');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
   
@@ -58,7 +60,7 @@ export default function BabyManagementPage() {
     setLoading(true);
     setMessage({ type: '', text: '' });
 
-    const { error } = await createBaby({
+    const { error, data } = await createBaby({
       name: newBabyName.trim(),
       date_of_birth: newBabyDOB || null,
     });
@@ -66,9 +68,23 @@ export default function BabyManagementPage() {
     if (error) {
       setMessage({ type: 'error', text: t('errorCreatingBaby') });
     } else {
+      // Update the creator's role if not 'mom' (default from trigger)
+      if (newBabyRole !== 'mom' && data) {
+        const { error: roleError } = await supabase
+          .from('baby_users')
+          .update({ role: newBabyRole })
+          .eq('baby_id', data.id)
+          .eq('user_id', user.id);
+        
+        if (roleError) {
+          console.error('Error updating role:', roleError);
+        }
+      }
+      
       setMessage({ type: 'success', text: t('babyCreatedSuccessfully') });
       setNewBabyName('');
       setNewBabyDOB('');
+      setNewBabyRole('mom');
       setShowCreateForm(false);
       
       setTimeout(() => {
@@ -178,6 +194,23 @@ export default function BabyManagementPage() {
                 onChange={(e) => setNewBabyDOB(e.target.value)}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
+            </div>
+
+            <div>
+              <label htmlFor="yourRole" className="block text-sm font-medium text-gray-700 mb-2">
+                {t('yourRole')} *
+              </label>
+              <select
+                id="yourRole"
+                value={newBabyRole}
+                onChange={(e) => setNewBabyRole(e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="mom">{t('mom')}</option>
+                <option value="dad">{t('dad')}</option>
+                <option value="other">{t('other')}</option>
+              </select>
+              <p className="text-xs text-gray-500 mt-1">{t('selectYourRole')}</p>
             </div>
 
             <button
