@@ -25,13 +25,20 @@ export default function Layout({ children }) {
       <header className="bg-white shadow-sm sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between mb-3">
-            <div>
-              <h1 className="text-xl font-bold text-gray-800">👶 Kat's Tracker</h1>
-              {user && (
-                <p className="text-xs text-gray-500 mt-1">
-                  {user.email}
-                </p>
-              )}
+            <div className="flex items-center gap-3">
+              <img 
+                src="/logo.png" 
+                alt="Kat's Tracker" 
+                className="h-10 w-10 object-contain"
+              />
+              <div>
+                <h1 className="text-xl font-bold text-gray-800">Kat's Tracker</h1>
+                {user && (
+                  <p className="text-xs text-gray-500 mt-1">
+                    {user.email}
+                  </p>
+                )}
+              </div>
             </div>
             <div className="flex items-center gap-3">
               <BabySelector />
