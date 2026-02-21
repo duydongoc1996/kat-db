@@ -144,25 +144,43 @@ CREATE POLICY "Users can view baby members" ON baby_users
     )
   );
 
-CREATE POLICY "Owners and admins can add users" ON baby_users
+-- Helper function to check owner/admin status (avoids recursion)
+CREATE OR REPLACE FUNCTION is_baby_owner_or_admin(baby_uuid UUID, user_uuid UUID)
+RETURNS BOOLEAN AS $$
+BEGIN
+  RETURN EXISTS (
+    SELECT 1 FROM baby_users
+    WHERE baby_id = baby_uuid
+    AND user_id = user_uuid
+    AND role IN ('owner', 'admin')
+  );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Allow insert if adding yourself OR if you're owner/admin
+CREATE POLICY "Users can add members to their babies" ON baby_users
   FOR INSERT
   WITH CHECK (
-    EXISTS (
-      SELECT 1 FROM baby_users
-      WHERE baby_users.baby_id = baby_users.baby_id
-      AND baby_users.user_id = auth.uid()
-      AND baby_users.role IN ('owner', 'admin')
-    )
+    user_id = auth.uid()
+    OR is_baby_owner_or_admin(baby_id, auth.uid())
   );
 
-CREATE POLICY "Owners and admins can remove users" ON baby_users
+-- Owners and admins can remove users
+CREATE POLICY "Owners and admins can remove members" ON baby_users
   FOR DELETE
+  USING (
+    is_baby_owner_or_admin(baby_id, auth.uid())
+  );
+
+-- Owners can update member roles
+CREATE POLICY "Owners can update member roles" ON baby_users
+  FOR UPDATE
   USING (
     EXISTS (
       SELECT 1 FROM baby_users bu
       WHERE bu.baby_id = baby_users.baby_id
       AND bu.user_id = auth.uid()
-      AND bu.role IN ('owner', 'admin')
+      AND bu.role = 'owner'
     )
   );
 
