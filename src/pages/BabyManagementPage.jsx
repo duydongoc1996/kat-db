@@ -1,15 +1,51 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '../contexts/AuthContext';
 import { useBaby } from '../contexts/BabyContext';
 
 export default function BabyManagementPage() {
   const { t } = useTranslation();
-  const { babies, currentBaby, createBaby } = useBaby();
+  const { user } = useAuth();
+  const { babies, currentBaby, createBaby, getAllUsers, getBabyMembers, inviteUserToBaby, removeUserFromBaby } = useBaby();
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [newBabyName, setNewBabyName] = useState('');
   const [newBabyDOB, setNewBabyDOB] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
+  
+  // Invite feature states
+  const [selectedBabyForInvite, setSelectedBabyForInvite] = useState(null);
+  const [allUsers, setAllUsers] = useState([]);
+  const [selectedUserId, setSelectedUserId] = useState('');
+  const [selectedRole, setSelectedRole] = useState('other');
+  const [inviteLoading, setInviteLoading] = useState(false);
+  const [members, setMembers] = useState([]);
+
+  // Fetch all users when component mounts
+  useEffect(() => {
+    fetchAllUsers();
+  }, []);
+
+  // Fetch members when a baby is selected for invite
+  useEffect(() => {
+    if (selectedBabyForInvite) {
+      fetchMembers(selectedBabyForInvite);
+    }
+  }, [selectedBabyForInvite]);
+
+  const fetchAllUsers = async () => {
+    const { data } = await getAllUsers();
+    if (data) {
+      setAllUsers(data);
+    }
+  };
+
+  const fetchMembers = async (babyId) => {
+    const { data } = await getBabyMembers(babyId);
+    if (data) {
+      setMembers(data);
+    }
+  };
 
   const handleCreateBaby = async (e) => {
     e.preventDefault();
@@ -41,6 +77,60 @@ export default function BabyManagementPage() {
     }
 
     setLoading(false);
+  };
+
+  const handleInviteUser = async (e) => {
+    e.preventDefault();
+    
+    if (!selectedUserId) {
+      setMessage({ type: 'error', text: t('pleaseSelectUser') });
+      return;
+    }
+
+    // Check if user already has access
+    if (members.some(m => m.user_id === selectedUserId)) {
+      setMessage({ type: 'error', text: t('userAlreadyHasAccess') });
+      return;
+    }
+
+    setInviteLoading(true);
+    setMessage({ type: '', text: '' });
+
+    const { error } = await inviteUserToBaby(selectedBabyForInvite, selectedUserId, selectedRole);
+
+    if (error) {
+      setMessage({ type: 'error', text: t('errorInvitingUser') });
+    } else {
+      setMessage({ type: 'success', text: t('userInvitedSuccessfully') });
+      setSelectedUserId('');
+      setSelectedRole('other');
+      fetchMembers(selectedBabyForInvite);
+      
+      setTimeout(() => {
+        setMessage({ type: '', text: '' });
+      }, 3000);
+    }
+
+    setInviteLoading(false);
+  };
+
+  const handleRemoveMember = async (babyUserId, memberEmail) => {
+    if (!confirm(t('confirmRemoveMember') + ' ' + memberEmail + '?')) {
+      return;
+    }
+
+    const { error } = await removeUserFromBaby(babyUserId);
+
+    if (error) {
+      setMessage({ type: 'error', text: t('errorRemovingUser') });
+    } else {
+      setMessage({ type: 'success', text: t('userRemovedSuccessfully') });
+      fetchMembers(selectedBabyForInvite);
+      
+      setTimeout(() => {
+        setMessage({ type: '', text: '' });
+      }, 3000);
+    }
   };
 
   return (
@@ -113,7 +203,7 @@ export default function BabyManagementPage() {
         )}
       </div>
 
-      {/* Baby List */}
+      {/* Baby List with Invite */}
       <div className="bg-white rounded-2xl shadow-lg p-6">
         <h3 className="text-lg font-semibold text-gray-800 mb-4">
           {t('yourBabies')} ({babies.length})
@@ -128,13 +218,13 @@ export default function BabyManagementPage() {
             {babies.map((baby) => (
               <div
                 key={baby.id}
-                className={`p-4 border-2 rounded-lg transition-colors ${
+                className={`p-4 border-2 rounded-lg ${
                   currentBaby?.id === baby.id
                     ? 'border-blue-500 bg-blue-50'
-                    : 'border-gray-200 hover:border-gray-300'
+                    : 'border-gray-200'
                 }`}
               >
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between mb-3">
                   <div>
                     <h4 className="font-semibold text-gray-800">
                       {baby.name}
@@ -153,19 +243,109 @@ export default function BabyManagementPage() {
                       {t('yourRole')}: <span className="font-medium">{t(baby.role)}</span>
                     </p>
                   </div>
+                  <button
+                    onClick={() => setSelectedBabyForInvite(selectedBabyForInvite === baby.id ? null : baby.id)}
+                    className="px-3 py-1 text-sm bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors"
+                  >
+                    {selectedBabyForInvite === baby.id ? t('hideInvite') : t('inviteUsers')}
+                  </button>
                 </div>
+
+                {/* Invite Section */}
+                {selectedBabyForInvite === baby.id && (
+                  <div className="border-t pt-3 mt-3 space-y-4">
+                    {/* Invite Form */}
+                    <form onSubmit={handleInviteUser} className="space-y-3">
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-xs font-medium text-gray-700 mb-1">
+                            {t('selectUser')}
+                          </label>
+                          <select
+                            value={selectedUserId}
+                            onChange={(e) => setSelectedUserId(e.target.value)}
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                            required
+                          >
+                            <option value="">{t('chooseUser')}</option>
+                            {allUsers
+                              .filter(u => u.id !== user.id)
+                              .map((u) => (
+                                <option key={u.id} value={u.id}>
+                                  {u.full_name || u.email}
+                                </option>
+                              ))}
+                          </select>
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-gray-700 mb-1">
+                            {t('role')}
+                          </label>
+                          <select
+                            value={selectedRole}
+                            onChange={(e) => setSelectedRole(e.target.value)}
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                          >
+                            <option value="mom">{t('mom')}</option>
+                            <option value="dad">{t('dad')}</option>
+                            <option value="other">{t('other')}</option>
+                          </select>
+                        </div>
+                      </div>
+                      <button
+                        type="submit"
+                        disabled={inviteLoading}
+                        className="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-4 rounded-lg transition-colors disabled:bg-gray-400 text-sm"
+                      >
+                        {inviteLoading ? t('inviting') : t('inviteUser')}
+                      </button>
+                    </form>
+
+                    {/* Current Members List */}
+                    <div className="border-t pt-3">
+                      <h5 className="text-sm font-semibold text-gray-700 mb-2">
+                        {t('currentMembers')} ({members.length})
+                      </h5>
+                      {members.length === 0 ? (
+                        <p className="text-xs text-gray-500">{t('loadingMembers')}</p>
+                      ) : (
+                        <div className="space-y-2">
+                          {members.map((member) => (
+                            <div
+                              key={member.id}
+                              className="flex items-center justify-between p-2 bg-gray-50 rounded-lg"
+                            >
+                              <div className="flex-1">
+                                <p className="text-sm font-medium text-gray-800">
+                                  {member.full_name || member.email}
+                                  {member.user_id === user.id && (
+                                    <span className="ml-2 text-xs text-blue-600">({t('you')})</span>
+                                  )}
+                                </p>
+                                <p className="text-xs text-gray-500">{member.email}</p>
+                                <p className="text-xs text-gray-600 mt-0.5">
+                                  {t('role')}: <span className="font-medium">{t(member.role)}</span>
+                                </p>
+                              </div>
+                              {member.user_id !== user.id && (
+                                <button
+                                  onClick={() => handleRemoveMember(member.id, member.email)}
+                                  className="text-red-500 hover:text-red-700 text-xs font-medium transition-colors"
+                                >
+                                  {t('remove')}
+                                </button>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
             ))}
           </div>
         )}
-      </div>
-
-      {/* Info Box */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <h4 className="font-medium text-blue-900 mb-2">{t('multiUserInfo')}</h4>
-        <p className="text-sm text-blue-800">
-          {t('multiUserDescription')}
-        </p>
       </div>
     </div>
   );
