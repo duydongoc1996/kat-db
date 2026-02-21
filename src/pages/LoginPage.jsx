@@ -32,7 +32,13 @@ export default function LoginPage() {
         <div className="bg-white rounded-2xl shadow-xl p-8">
           {/* App Icon & Title */}
           <div className="text-center mb-8">
-            <div className="text-6xl mb-4">👶</div>
+            <div className="flex justify-center mb-4">
+              <img 
+                src="/logo.png" 
+                alt="Kat's Tracker" 
+                className="h-24 w-24 object-contain"
+              />
+            </div>
             <h1 className="text-3xl font-bold text-gray-800 mb-2">
               Kat's Tracker
             </h1>
