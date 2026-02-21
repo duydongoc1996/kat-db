@@ -36,10 +36,10 @@ export default function Layout({ children }) {
               <LanguageSelector />
               <button
                 onClick={handleSignOut}
-                className="text-sm text-gray-600 hover:text-gray-800 font-medium transition-colors"
+                className="text-2xl hover:opacity-70 transition-opacity"
                 title={t('signOut') || 'Sign out'}
               >
-                🚪 {t('signOut') || 'Sign out'}
+                🚪
               </button>
             </div>
           </div>

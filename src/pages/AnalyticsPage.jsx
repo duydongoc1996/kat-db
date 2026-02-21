@@ -57,9 +57,7 @@ export default function AnalyticsPage() {
       const formattedData = records.map((record) => ({
         time: new Date(record.recorded_at).toLocaleString(
           undefined,
-          timeRange === '24hours'
-            ? { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }
-            : { month: 'short', day: 'numeric' }
+          { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }
         ),
         value: parseFloat(record.value),
         fullDate: new Date(record.recorded_at),
@@ -208,24 +206,24 @@ export default function AnalyticsPage() {
 
       {/* Today's Summary */}
       {selectedMetric && todaySummary && (
-        <div className="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl shadow-lg p-6 text-white">
-          <h3 className="text-lg font-semibold mb-4">{t('todaySummary')}</h3>
+        <div className="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl shadow-lg p-6">
+          <h3 className="text-lg font-semibold mb-4 text-white">{t('todaySummary')}</h3>
           <div className="grid grid-cols-3 gap-4">
-            <div className="bg-white bg-opacity-20 rounded-lg p-4">
-              <div className="text-sm opacity-90">{t('total')}</div>
-              <div className="text-2xl font-bold">
+            <div className="bg-white rounded-lg p-4 shadow">
+              <div className="text-sm text-gray-600">{t('total')}</div>
+              <div className="text-2xl font-bold text-gray-800">
                 {todaySummary.total} {t(selectedUnit)}
               </div>
             </div>
-            <div className="bg-white bg-opacity-20 rounded-lg p-4">
-              <div className="text-sm opacity-90">{t('average')}</div>
-              <div className="text-2xl font-bold">
+            <div className="bg-white rounded-lg p-4 shadow">
+              <div className="text-sm text-gray-600">{t('average')}</div>
+              <div className="text-2xl font-bold text-gray-800">
                 {todaySummary.average} {t(selectedUnit)}
               </div>
             </div>
-            <div className="bg-white bg-opacity-20 rounded-lg p-4">
-              <div className="text-sm opacity-90">{t('records')}</div>
-              <div className="text-2xl font-bold">{todaySummary.count}</div>
+            <div className="bg-white rounded-lg p-4 shadow">
+              <div className="text-sm text-gray-600">{t('records')}</div>
+              <div className="text-2xl font-bold text-gray-800">{todaySummary.count}</div>
             </div>
           </div>
         </div>

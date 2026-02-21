@@ -10,6 +10,7 @@ export default function FormPage() {
   const [inputType, setInputType] = useState('');
   const [value, setValue] = useState('');
   const [note, setNote] = useState('');
+  const [recordedAt, setRecordedAt] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
 
@@ -25,22 +26,28 @@ export default function FormPage() {
     setMessage({ type: '', text: '' });
 
     try {
+      const recordData = {
+        user_id: user.id,
+        input_type: inputType,
+        value: parseFloat(value),
+        note: note.trim() || null,
+      };
+
+      // If custom time is provided, use it; otherwise Supabase will use NOW()
+      if (recordedAt) {
+        recordData.recorded_at = new Date(recordedAt).toISOString();
+      }
+
       const { error } = await supabase
         .from('metrics')
-        .insert([
-          {
-            user_id: user.id,
-            input_type: inputType,
-            value: parseFloat(value),
-            note: note.trim() || null,
-          }
-        ]);
+        .insert([recordData]);
 
       if (error) throw error;
 
       setMessage({ type: 'success', text: t('successMessage') });
       setValue('');
       setNote('');
+      setRecordedAt('');
       
       setTimeout(() => {
         setMessage({ type: '', text: '' });
@@ -100,6 +107,23 @@ export default function FormPage() {
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
               required
             />
+          </div>
+
+          {/* Date/Time Input (Optional) */}
+          <div>
+            <label htmlFor="recordedAt" className="block text-sm font-medium text-gray-700 mb-2">
+              {t('recordedTime')} <span className="text-gray-500 text-xs">({t('optional')})</span>
+            </label>
+            <input
+              type="datetime-local"
+              id="recordedAt"
+              value={recordedAt}
+              onChange={(e) => setRecordedAt(e.target.value)}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+            />
+            <p className="text-xs text-gray-500 mt-1">
+              {t('recordedTimeHelper')}
+            </p>
           </div>
 
           {/* Note Input */}
