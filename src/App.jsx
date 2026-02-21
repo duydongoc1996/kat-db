@@ -5,6 +5,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Layout from './components/Layout';
 import LoginPage from './pages/LoginPage';
 import FormPage from './pages/FormPage';
+import MetricsHistoryPage from './pages/MetricsHistoryPage';
 import AnalyticsPage from './pages/AnalyticsPage';
 import BabyManagementPage from './pages/BabyManagementPage';
 import './i18n/config';
@@ -22,6 +23,16 @@ function App() {
                 <ProtectedRoute>
                   <Layout>
                     <FormPage />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/history"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <MetricsHistoryPage />
                   </Layout>
                 </ProtectedRoute>
               }

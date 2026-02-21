@@ -6,6 +6,7 @@ const resources = {
     translation: {
       // Navigation
       form: 'Record',
+      history: 'History',
       analytics: 'Analytics',
       babies: 'Babies',
       
@@ -118,6 +119,25 @@ const resources = {
       userRemovedSuccessfully: 'User removed successfully!',
       confirmRemoveMember: 'Are you sure you want to remove',
       
+      // Metrics History Page
+      metricsHistory: 'Metrics History',
+      filterByType: 'Filter by type',
+      allTypes: 'All Types',
+      dateTime: 'Date & Time',
+      metricType: 'Metric Type',
+      actions: 'Actions',
+      edit: 'Edit',
+      delete: 'Delete',
+      save: 'Save',
+      noRecordsFound: 'No records found',
+      errorLoadingMetrics: 'Failed to load metrics',
+      recordUpdated: 'Record updated successfully!',
+      recordDeleted: 'Record deleted successfully!',
+      errorUpdatingRecord: 'Failed to update record',
+      errorDeletingRecord: 'Failed to delete record',
+      confirmDelete: 'Are you sure you want to delete this record?',
+      showingRecords: 'Showing {{count}} record(s)',
+      
       // Language
       language: 'Language',
     }
@@ -126,6 +146,7 @@ const resources = {
     translation: {
       // Navigation
       form: 'Ghi chép',
+      history: 'Lịch sử',
       analytics: 'Thống kê',
       babies: 'Bé yêu',
       
@@ -237,6 +258,25 @@ const resources = {
       errorRemovingUser: 'Xóa người dùng thất bại. Vui lòng thử lại.',
       userRemovedSuccessfully: 'Đã xóa người dùng thành công!',
       confirmRemoveMember: 'Bạn có chắc muốn xóa',
+      
+      // Metrics History Page
+      metricsHistory: 'Lịch Sử Ghi Chép',
+      filterByType: 'Lọc theo loại',
+      allTypes: 'Tất Cả',
+      dateTime: 'Ngày & Giờ',
+      metricType: 'Loại Chỉ Số',
+      actions: 'Thao Tác',
+      edit: 'Sửa',
+      delete: 'Xóa',
+      save: 'Lưu',
+      noRecordsFound: 'Không tìm thấy bản ghi',
+      errorLoadingMetrics: 'Không thể tải dữ liệu',
+      recordUpdated: 'Đã cập nhật thành công!',
+      recordDeleted: 'Đã xóa thành công!',
+      errorUpdatingRecord: 'Không thể cập nhật',
+      errorDeletingRecord: 'Không thể xóa',
+      confirmDelete: 'Bạn có chắc muốn xóa bản ghi này?',
+      showingRecords: 'Hiển thị {{count}} bản ghi',
       
       // Language
       language: 'Ngôn ngữ',

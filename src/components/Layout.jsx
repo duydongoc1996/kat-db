@@ -38,19 +38,21 @@ export default function Layout({ children }) {
               <LanguageSelector />
               <button
                 onClick={handleSignOut}
-                className="text-2xl hover:opacity-70 transition-opacity"
+                className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                 title={t('signOut') || 'Sign out'}
               >
-                🚪
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
               </button>
             </div>
           </div>
           
           {/* Navigation */}
-          <nav className="flex gap-2">
+          <nav className="flex gap-2 overflow-x-auto">
             <Link
               to="/"
-              className={`flex-1 py-2 px-4 rounded-lg text-center font-medium transition-colors ${
+              className={`flex-1 py-2 px-3 rounded-lg text-center font-medium transition-colors whitespace-nowrap ${
                 isActive('/')
                   ? 'bg-blue-500 text-white'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -59,8 +61,18 @@ export default function Layout({ children }) {
               📝 {t('form')}
             </Link>
             <Link
+              to="/history"
+              className={`flex-1 py-2 px-3 rounded-lg text-center font-medium transition-colors whitespace-nowrap ${
+                isActive('/history')
+                  ? 'bg-blue-500 text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              📋 {t('history')}
+            </Link>
+            <Link
               to="/analytics"
-              className={`flex-1 py-2 px-4 rounded-lg text-center font-medium transition-colors ${
+              className={`flex-1 py-2 px-3 rounded-lg text-center font-medium transition-colors whitespace-nowrap ${
                 isActive('/analytics')
                   ? 'bg-blue-500 text-white'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -70,7 +82,7 @@ export default function Layout({ children }) {
             </Link>
             <Link
               to="/babies"
-              className={`flex-1 py-2 px-4 rounded-lg text-center font-medium transition-colors ${
+              className={`flex-1 py-2 px-3 rounded-lg text-center font-medium transition-colors whitespace-nowrap ${
                 isActive('/babies')
                   ? 'bg-blue-500 text-white'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
