@@ -138,6 +138,10 @@ const resources = {
       confirmDelete: 'Are you sure you want to delete this record?',
       showingRecords: 'Showing {{count}} record(s)',
       
+      // Menu
+      menu: 'Menu',
+      signedInAs: 'Signed in as',
+      
       // Language
       language: 'Language',
     }
@@ -277,6 +281,10 @@ const resources = {
       errorDeletingRecord: 'Không thể xóa',
       confirmDelete: 'Bạn có chắc muốn xóa bản ghi này?',
       showingRecords: 'Hiển thị {{count}} bản ghi',
+      
+      // Menu
+      menu: 'Menu',
+      signedInAs: 'Đăng nhập bằng',
       
       // Language
       language: 'Ngôn ngữ',

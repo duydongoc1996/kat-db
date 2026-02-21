@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
@@ -8,6 +9,7 @@ export default function Layout({ children }) {
   const { t } = useTranslation();
   const { user, signOut } = useAuth();
   const location = useLocation();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const isActive = (path) => location.pathname === path;
 
@@ -17,6 +19,14 @@ export default function Layout({ children }) {
     } catch (error) {
       console.error('Error signing out:', error);
     }
+  };
+
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
+  };
+
+  const closeMenu = () => {
+    setMenuOpen(false);
   };
 
   return (
@@ -40,19 +50,16 @@ export default function Layout({ children }) {
                 )}
               </div>
             </div>
-            <div className="flex items-center gap-3">
-              <BabySelector />
-              <LanguageSelector />
-              <button
-                onClick={handleSignOut}
-                className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                title={t('signOut') || 'Sign out'}
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                </svg>
-              </button>
-            </div>
+            {/* Menu Button */}
+            <button
+              onClick={toggleMenu}
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              aria-label="Menu"
+            >
+              <svg className="h-6 w-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
           </div>
           
           {/* Navigation */}
@@ -105,6 +112,80 @@ export default function Layout({ children }) {
       <main className="max-w-4xl mx-auto px-4 py-6">
         {children}
       </main>
+
+      {/* Overlay */}
+      {menuOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity"
+          onClick={closeMenu}
+        />
+      )}
+
+      {/* Slide-in Menu */}
+      <div
+        className={`fixed top-0 right-0 h-full w-80 bg-white shadow-2xl z-50 transform transition-transform duration-300 ease-in-out ${
+          menuOpen ? 'translate-x-0' : 'translate-x-full'
+        }`}
+      >
+        <div className="flex flex-col h-full">
+          {/* Menu Header */}
+          <div className="flex items-center justify-between p-4 border-b border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-800">{t('menu')}</h3>
+            <button
+              onClick={closeMenu}
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              aria-label="Close menu"
+            >
+              <svg className="h-6 w-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Menu Content */}
+          <div className="flex-1 overflow-y-auto p-6 space-y-6">
+            {/* User Info */}
+            {user && (
+              <div className="pb-4 border-b border-gray-200">
+                <p className="text-sm text-gray-500 mb-1">{t('signedInAs')}</p>
+                <p className="text-sm font-medium text-gray-800 break-all">{user.email}</p>
+              </div>
+            )}
+
+            {/* Baby Selector */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                {t('selectBaby')}
+              </label>
+              <BabySelector />
+            </div>
+
+            {/* Language Selector */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                {t('language')}
+              </label>
+              <LanguageSelector />
+            </div>
+          </div>
+
+          {/* Menu Footer - Logout */}
+          <div className="p-4 border-t border-gray-200">
+            <button
+              onClick={() => {
+                handleSignOut();
+                closeMenu();
+              }}
+              className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-red-50 hover:bg-red-100 text-red-600 font-medium rounded-lg transition-colors"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+              <span>{t('signOut')}</span>
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
