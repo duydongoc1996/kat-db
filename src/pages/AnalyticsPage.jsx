@@ -280,7 +280,7 @@ export default function AnalyticsPage() {
           ) : (
             <ResponsiveContainer width="100%" height={300}>
               {chartType === 'line' ? (
-                <LineChart data={data}>
+                <LineChart data={data} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis 
                     dataKey="time" 
@@ -289,7 +289,7 @@ export default function AnalyticsPage() {
                     textAnchor="end"
                     height={60}
                   />
-                  <YAxis tick={{ fontSize: 12 }} />
+                  <YAxis tick={{ fontSize: 11 }} width={50} />
                   <Tooltip />
                   <Line 
                     type="monotone" 
@@ -300,7 +300,7 @@ export default function AnalyticsPage() {
                   />
                 </LineChart>
               ) : (
-                <BarChart data={data}>
+                <BarChart data={data} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis 
                     dataKey="time" 
@@ -309,7 +309,7 @@ export default function AnalyticsPage() {
                     textAnchor="end"
                     height={60}
                   />
-                  <YAxis tick={{ fontSize: 12 }} />
+                  <YAxis tick={{ fontSize: 11 }} width={50} />
                   <Tooltip />
                   <Bar dataKey="value" fill="#3b82f6" />
                 </BarChart>
