@@ -12,7 +12,7 @@ export default function AnalyticsPage() {
   const [chartType, setChartType] = useState('line');
   const [timeRange, setTimeRange] = useState('7days');
   const [data, setData] = useState([]);
-  const [todaySummary, setTodaySummary] = useState(null);
+  const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -67,22 +67,17 @@ export default function AnalyticsPage() {
 
       setData(formattedData);
 
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      const todayRecords = records.filter(
-        (r) => new Date(r.recorded_at) >= today
-      );
-
-      if (todayRecords.length > 0) {
-        const total = todayRecords.reduce((sum, r) => sum + parseFloat(r.value), 0);
-        const average = total / todayRecords.length;
-        setTodaySummary({
+      // Calculate summary for the selected time range (not just today)
+      if (records.length > 0) {
+        const total = records.reduce((sum, r) => sum + parseFloat(r.value), 0);
+        const average = total / records.length;
+        setSummary({
           total: total.toFixed(2),
           average: average.toFixed(2),
-          count: todayRecords.length,
+          count: records.length,
         });
       } else {
-        setTodaySummary(null);
+        setSummary(null);
       }
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -243,26 +238,26 @@ export default function AnalyticsPage() {
         </div>
       </div>
 
-      {/* Today's Summary */}
-      {selectedMetric && todaySummary && (
+      {/* Summary */}
+      {selectedMetric && summary && (
         <div className="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl shadow-lg p-6">
-          <h3 className="text-lg font-semibold mb-4 text-white">{t('todaySummary')}</h3>
+          <h3 className="text-lg font-semibold mb-4 text-white">{t('summary')}</h3>
           <div className="grid grid-cols-3 gap-4">
             <div className="bg-white rounded-lg p-4 shadow">
               <div className="text-sm text-gray-600">{t('total')}</div>
               <div className="text-2xl font-bold text-gray-800">
-                {todaySummary.total} {t(selectedUnit)}
+                {summary.total} {t(selectedUnit)}
               </div>
             </div>
             <div className="bg-white rounded-lg p-4 shadow">
               <div className="text-sm text-gray-600">{t('average')}</div>
               <div className="text-2xl font-bold text-gray-800">
-                {todaySummary.average} {t(selectedUnit)}
+                {summary.average} {t(selectedUnit)}
               </div>
             </div>
             <div className="bg-white rounded-lg p-4 shadow">
               <div className="text-sm text-gray-600">{t('records')}</div>
-              <div className="text-2xl font-bold text-gray-800">{todaySummary.count}</div>
+              <div className="text-2xl font-bold text-gray-800">{summary.count}</div>
             </div>
           </div>
         </div>
