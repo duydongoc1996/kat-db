@@ -4,6 +4,7 @@ import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, R
 import { useBaby } from '../contexts/BabyContext';
 import { supabase } from '../lib/supabase';
 import { METRIC_TYPES, getMetricUnit } from '../constants/metrics';
+import BabyInfoBanner from '../components/BabyInfoBanner';
 
 export default function AnalyticsPage() {
   const { t } = useTranslation();
@@ -185,11 +186,11 @@ export default function AnalyticsPage() {
                 </div>
               </div>
 
-              {/* Time Range */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  {t('timeRange')}
-                </label>
+            {/* Time Range */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                {t('timeRange')}
+              </label>
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     onClick={() => setTimeRange('24hours')}

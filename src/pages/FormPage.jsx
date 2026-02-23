@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useBaby } from '../contexts/BabyContext';
 import { supabase } from '../lib/supabase';
 import { METRIC_TYPES, getMetricUnit } from '../constants/metrics';
+import BabyInfoBanner from '../components/BabyInfoBanner';
 
 export default function FormPage() {
   const { t } = useTranslation();
@@ -101,14 +102,12 @@ export default function FormPage() {
   }
 
   return (
-    <div className="max-w-md mx-auto">
+    <div className="max-w-md mx-auto space-y-6">
+      {/* Baby Info Banner */}
+      <BabyInfoBanner />
+
+      {/* Form */}
       <div className="bg-white rounded-2xl shadow-lg p-6">
-        <h2 className="text-2xl font-bold text-gray-800 mb-2">
-          {t('recordMetricsFor', { babyName: currentBaby.name })}
-        </h2>
-        <p className="text-sm text-gray-600 mb-6">
-          {t('recordingFor')}: <span className="font-medium text-blue-600">{currentBaby.name}</span>
-        </p>
 
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* Metric Type Dropdown */}

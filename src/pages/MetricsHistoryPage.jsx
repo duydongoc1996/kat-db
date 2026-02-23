@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useBaby } from '../contexts/BabyContext';
 import { supabase } from '../lib/supabase';
 import { METRIC_TYPES, getMetricUnit } from '../constants/metrics';
+import BabyInfoBanner from '../components/BabyInfoBanner';
 
 export default function MetricsHistoryPage() {
   const { t } = useTranslation();
@@ -124,16 +125,16 @@ export default function MetricsHistoryPage() {
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
-      {/* Header */}
+      {/* Baby Info Banner */}
+      <BabyInfoBanner />
+
+      {/* Header with Filter */}
       <div className="bg-white rounded-2xl shadow-lg p-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
             <h2 className="text-2xl font-bold text-gray-800">
               {t('metricsHistory')}
             </h2>
-            <p className="text-sm text-gray-600 mt-1">
-              {t('viewingDataFor')}: <span className="font-medium text-blue-600">{currentBaby.name}</span>
-            </p>
           </div>
 
           {/* Filter */}
