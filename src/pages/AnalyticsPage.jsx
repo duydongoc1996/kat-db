@@ -241,24 +241,26 @@ export default function AnalyticsPage() {
 
       {/* Summary */}
       {selectedMetric && summary && (
-        <div className="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl shadow-lg p-6">
-          <h3 className="text-lg font-semibold mb-4 text-white">{t('summary')}</h3>
-          <div className="grid grid-cols-3 gap-4">
-            <div className="bg-white rounded-lg p-4 shadow">
-              <div className="text-sm text-gray-600">{t('total')}</div>
-              <div className="text-2xl font-bold text-gray-800">
-                {summary.total} {t(selectedUnit)}
+        <div className="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl shadow-lg p-4 md:p-6">
+          <h3 className="text-base md:text-lg font-semibold mb-3 text-white">{t('summary')}</h3>
+          <div className="grid grid-cols-3 gap-2 md:gap-4">
+            <div className="bg-white rounded-lg p-3 shadow">
+              <div className="text-xs text-gray-600">{t('total')}</div>
+              <div className="text-base md:text-xl font-bold text-gray-800 break-words">
+                {summary.total}
               </div>
+              <div className="text-xs text-gray-500">{t(selectedUnit)}</div>
             </div>
-            <div className="bg-white rounded-lg p-4 shadow">
-              <div className="text-sm text-gray-600">{t('average')}</div>
-              <div className="text-2xl font-bold text-gray-800">
-                {summary.average} {t(selectedUnit)}
+            <div className="bg-white rounded-lg p-3 shadow">
+              <div className="text-xs text-gray-600">{t('average')}</div>
+              <div className="text-base md:text-xl font-bold text-gray-800 break-words">
+                {summary.average}
               </div>
+              <div className="text-xs text-gray-500">{t(selectedUnit)}</div>
             </div>
-            <div className="bg-white rounded-lg p-4 shadow">
-              <div className="text-sm text-gray-600">{t('records')}</div>
-              <div className="text-2xl font-bold text-gray-800">{summary.count}</div>
+            <div className="bg-white rounded-lg p-3 shadow">
+              <div className="text-xs text-gray-600">{t('records')}</div>
+              <div className="text-base md:text-xl font-bold text-gray-800">{summary.count}</div>
             </div>
           </div>
         </div>
